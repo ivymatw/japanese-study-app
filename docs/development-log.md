@@ -49,11 +49,51 @@ japanese-study-app/
 - SQLite → **Core Data + SQLite**
 - Third-party OCR → **Vision Framework** (主要)
 
+### ✅ iOS 原生實作完成 (2026-02-15 - MiniMax M2.5)
+**重要里程碑：** 完成完整 iOS 應用程式碼實作
+
+**完成的核心模組：**
+- ✅ **SwiftUI App 架構** - JapaneseStudyApp.swift + ContentView
+- ✅ **相機管理器** - CameraManager (AVFoundation 整合)
+- ✅ **Vision OCR** - VisionManager (Vision Framework + 文字識別)
+- ✅ **翻譯服務** - TranslationService (Google Translate API + 快取)
+- ✅ **學習會話** - StudySessionManager (測驗邏輯)
+- ✅ **Core Data** - PersistenceController + 資料模型
+
+**完成的 SwiftUI Views：**
+- ✅ **StudyTableListView** - 學習表列表管理
+- ✅ **CameraView** - 相機拍照介面 
+- ✅ **StudyCardView** - 測驗卡片 (翻面動畫 + 滑動手勢)
+- ✅ **ProcessingView** - OCR 處理和編輯介面
+- ✅ **TestConfigView** - 測驗設定和結果顯示
+- ✅ **StatisticsView** - 學習統計和進度追蹤
+- ✅ **AddStudyTableView** - 手動建立學習表
+
+**技術整合：**
+- ✅ Core Data 資料模型 (StudyTable, StudyItem, TestRecord)
+- ✅ 相機權限和 Info.plist 設定
+- ✅ Vision Framework 日文 OCR 整合
+- ✅ Google Translate API 整合 (含快取機制)
+- ✅ SwiftUI 動畫和手勢識別
+- ✅ 配置檔案和常數管理
+
+**檔案結構：**
+```
+JapaneseStudyApp/
+├── JapaneseStudyApp.swift       # App 入口點
+├── Views/                       # SwiftUI 視圖 (9個)
+├── Managers/                    # 業務邏輯管理 (4個)
+├── Models/                      # 資料模型擴展 (2個)
+├── Core Data/                   # 資料持久化 (2個)
+├── Utils/                       # 工具和配置 (1個)
+└── Resources/                   # 資源和配置 (1個)
+```
+
 ### 🎯 下一步計畫
-1. 建立 Xcode iOS 專案
-2. 設定 SwiftUI 基本架構
-3. 實作相機模組 (AVFoundation)
-4. 整合 Vision Framework OCR
+1. 建立實際 Xcode 專案並匯入程式碼
+2. 設定 API 金鑰和開發者憑證
+3. 真機測試相機和 OCR 功能
+4. UI/UX 調優和 bug 修復
 
 ---
 
