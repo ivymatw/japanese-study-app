@@ -34,11 +34,26 @@ japanese-study-app/
 - 設定 MIT 授權和 .gitignore
 - Git 版本控制初始化
 
+### 🔄 技術架構調整 (2026-02-15)
+**決策變更：** 從 React Native 跨平台開發改為 iOS 原生開發
+
+**調整原因：**
+- 簡化開發流程，專注 iOS 平台
+- 更好的相機和手勢支援
+- 使用原生 Vision Framework 提升 OCR 性能
+- 避免跨平台相容性問題
+
+**技術棧更新：**
+- React Native → **Swift + SwiftUI**
+- Redux → **@StateObject + @ObservableObject**
+- SQLite → **Core Data + SQLite**
+- Third-party OCR → **Vision Framework** (主要)
+
 ### 🎯 下一步計畫
-1. 建立 React Native 專案框架
-2. 設定開發環境和依賴套件
-3. 實作相機模組 POC
-4. 整合 OCR 服務測試
+1. 建立 Xcode iOS 專案
+2. 設定 SwiftUI 基本架構
+3. 實作相機模組 (AVFoundation)
+4. 整合 Vision Framework OCR
 
 ---
 

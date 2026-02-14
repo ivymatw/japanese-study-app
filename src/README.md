@@ -1,31 +1,42 @@
-# Source Code Directory
+# iOS Source Code Directory
 
-這裡將存放 React Native 應用的原始碼。
+這裡將存放 iOS 原生應用的 Swift 原始碼。
 
-## 預計目錄結構
+## iOS 專案目錄結構
 
 ```
-src/
-├── components/          # 可重用組件
-│   ├── Camera/         # 相機相關組件
-│   ├── Card/           # 測驗卡片組件
-│   └── Common/         # 共用 UI 組件
-├── screens/            # 頁面組件
-│   ├── HomeScreen/     # 首頁
-│   ├── CameraScreen/   # 拍照頁面
-│   ├── EditScreen/     # 編輯頁面
-│   ├── TestScreen/     # 測驗頁面
-│   └── ResultScreen/   # 結果頁面
-├── services/           # 服務層
-│   ├── OCRService.js   # OCR 服務
-│   ├── TranslationService.js  # 翻譯服務
-│   └── DatabaseService.js     # 資料庫服務
-├── store/              # Redux store
-│   ├── slices/         # Redux slices
-│   └── index.js        # Store 配置
-├── utils/              # 工具函數
-├── constants/          # 常數定義
-└── types/              # TypeScript 型別定義
+JapaneseStudyApp/
+├── App/                    # 應用程式入口點
+│   ├── JapaneseStudyApp.swift     # App 主檔案
+│   └── ContentView.swift          # 主要內容視圖
+├── Views/                  # SwiftUI Views
+│   ├── StudyTableListView.swift   # 學習表列表
+│   ├── CameraView.swift           # 相機介面
+│   ├── EditingView.swift          # 編輯頁面
+│   ├── StudyCardView.swift        # 測驗卡片
+│   └── ResultView.swift           # 結果頁面
+├── Managers/               # 業務邏輯管理器
+│   ├── CameraManager.swift        # 相機管理
+│   ├── VisionManager.swift        # OCR 識別
+│   ├── TranslationService.swift   # 翻譯服務
+│   └── StudySessionManager.swift  # 學習會話
+├── Models/                 # 資料模型
+│   ├── StudyTable.swift           # 學習表
+│   ├── StudyItem.swift            # 學習項目
+│   └── TestSession.swift          # 測驗會話
+├── Core Data/              # Core Data 模型
+│   ├── DataModel.xcdatamodeld     # 資料庫模型
+│   └── PersistenceController.swift # 持久化控制器
+├── Extensions/             # Swift 擴展
+│   ├── UIImage+Extensions.swift   # 圖片處理擴展
+│   └── String+Extensions.swift    # 字串擴展
+├── Utils/                  # 工具類
+│   ├── NetworkManager.swift       # 網路管理
+│   └── Constants.swift            # 常數定義
+└── Resources/              # 資源檔案
+    ├── Assets.xcassets            # 圖片資源
+    ├── Localizable.strings        # 本地化字串
+    └── Info.plist                 # 應用設定
 ```
 
-React Native 專案初始化後將在此建立完整的程式碼結構。
+建立 Xcode 專案後將實作完整的 iOS 原生應用程式碼。

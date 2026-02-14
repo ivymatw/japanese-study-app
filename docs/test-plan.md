@@ -7,11 +7,11 @@
 2. **整合測試** (Integration Tests) - 30%  
 3. **端到端測試** (E2E Tests) - 10%
 
-### 測試工具
-- **單元測試**: Jest + React Native Testing Library
-- **整合測試**: Detox
-- **手動測試**: 真機測試
-- **性能測試**: Flipper + React DevTools
+### 測試工具 (iOS 原生)
+- **單元測試**: XCTest (內建測試框架)
+- **UI 測試**: XCUITest
+- **手動測試**: iOS Simulator + 真機測試
+- **性能測試**: Instruments (Time Profiler, Allocations)
 
 ## 測試用例
 

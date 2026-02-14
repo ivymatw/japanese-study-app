@@ -2,32 +2,32 @@
 
 ## 技術架構
 
-### 技術棧選擇
-- **前端框架**: React Native (跨平台開發)
-- **狀態管理**: Redux Toolkit
-- **資料庫**: SQLite (本地存儲)
-- **OCR服務**: Google Vision API + Tesseract.js (備用)
+### 技術棧選擇 (iOS 原生)
+- **開發語言**: Swift
+- **UI 框架**: SwiftUI
+- **資料庫**: Core Data + SQLite
+- **OCR服務**: Vision Framework (iOS 原生) + Google Vision API (備用)
 - **翻譯服務**: Google Translate API
-- **影像處理**: react-native-image-picker + OpenCV
+- **影像處理**: AVFoundation + Vision Framework
 
-### 系統架構圖
+### iOS 原生架構圖
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   相機模組      │───▶│   OCR 處理      │───▶│   翻譯服務      │
-│   (拍照/裁切)   │    │   (文字識別)    │    │   (中日翻譯)    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-          │                       │                       │
-          ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   影像存儲      │    │   內容分析      │    │   本地資料庫    │
-│   (原圖/處理圖) │    │   (單字/句子)   │    │   (SQLite)      │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                    ┌─────────────────┐
-                    │   測驗系統      │
-                    │   (卡片/手勢)   │
-                    └─────────────────┘
+┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────┐
+│   AVFoundation      │───▶│   Vision Framework  │───▶│ Google Translate│
+│   (相機拍照/錄影)   │    │   (OCR文字識別)     │    │   (翻譯API)     │
+└─────────────────────┘    └─────────────────────┘    └─────────────────┘
+          │                           │                         │
+          ▼                           ▼                         ▼
+┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────┐
+│     PhotoKit        │    │    NLP Processing   │    │   Core Data     │
+│   (圖片庫管理)      │    │   (內容智能分析)    │    │  (本地資料庫)   │
+└─────────────────────┘    └─────────────────────┘    └─────────────────┘
+                                     │
+                                     ▼
+                         ┌─────────────────────┐
+                         │      SwiftUI        │
+                         │   (測驗UI/手勢)     │
+                         └─────────────────────┘
 ```
 
 ## 資料庫設計
@@ -83,90 +83,152 @@ CREATE TABLE images (
 );
 ```
 
-## 核心模組設計
+## 核心模組設計 (iOS Swift)
 
-### 1. CameraModule (相機模組)
-```javascript
-class CameraModule {
+### 1. CameraManager (相機管理器)
+```swift
+class CameraManager: NSObject, ObservableObject {
+    // 設定相機會話
+    func setupCameraSession()
+    
     // 拍攝多張照片
-    async captureMultiplePhotos()
-    // 影像預處理 (裁切、銳化、去噪)
-    async preprocessImage(imageUri)
-    // 儲存圖片到本地
-    async saveImage(imageData, tableId)
+    func captureMultiplePhotos() -> [UIImage]
+    
+    // 影像預處理 (裁切、增強)
+    func preprocessImage(_ image: UIImage) -> UIImage
+    
+    // 儲存到 PhotoKit
+    func saveToPhotoLibrary(_ images: [UIImage])
 }
 ```
 
-### 2. OCRModule (文字識別)
-```javascript
-class OCRModule {
-    // Google Vision API 識別
-    async recognizeTextWithVision(imageUri)
-    // Tesseract 備用識別
-    async recognizeTextWithTesseract(imageUri)
-    // 智能內容分類 (單字/語法)
-    async classifyContent(recognizedText)
+### 2. VisionManager (視覺識別管理器)
+```swift
+class VisionManager: ObservableObject {
+    // Vision Framework OCR
+    func recognizeTextWithVision(_ image: UIImage) async -> [VNRecognizedTextObservation]
+    
+    // Google Vision API 備用
+    func recognizeWithGoogleAPI(_ image: UIImage) async -> String
+    
+    // 智能內容分類
+    func classifyContent(_ recognizedText: String) -> ContentType
+    
+    // 日文文字偵測
+    func detectJapaneseText(_ observations: [VNRecognizedTextObservation]) -> [String]
 }
 ```
 
-### 3. TranslationModule (翻譯模組)
-```javascript
-class TranslationModule {
+### 3. TranslationService (翻譯服務)
+```swift
+class TranslationService: ObservableObject {
     // 批量翻譯
-    async translateBatch(japaneseTexts)
+    func translateBatch(_ japaneseTexts: [String]) async -> [String]
+    
     // 單一翻譯
-    async translateSingle(japaneseText)
-    // 翻譯快取機制
-    async getCachedTranslation(text)
+    func translateSingle(_ text: String) async -> String
+    
+    // 快取管理
+    private func getCachedTranslation(_ text: String) -> String?
+    private func setCachedTranslation(_ text: String, translation: String)
 }
 ```
 
-### 4. TestModule (測驗模組)
-```javascript
-class TestModule {
-    // 建立測驗
-    async createTest(tableIds, settings)
-    // 隨機排序題目
-    shuffleItems(items)
-    // 記錄答題結果
-    async recordAnswer(itemId, isCorrect)
-    // 產生錯題集
-    async generateRetestItems(testId)
+### 4. StudySessionManager (學習會話管理器)
+```swift
+class StudySessionManager: ObservableObject {
+    // 建立測驗會話
+    func createStudySession(tableIds: [UUID], settings: TestSettings) -> StudySession
+    
+    // 隨機排序
+    func shuffleItems(_ items: [StudyItem]) -> [StudyItem]
+    
+    // 記錄答題
+    func recordAnswer(itemId: UUID, isCorrect: Bool)
+    
+    // 產生複習清單
+    func generateReviewItems(from sessionId: UUID) -> [StudyItem]
 }
 ```
 
-## UI/UX 設計
+## SwiftUI 介面設計
 
-### 主要頁面
-1. **首頁** - 顯示學習表列表
-2. **拍照頁** - 相機介面 + 圖片預覽
-3. **編輯頁** - 識別結果編輯
-4. **測驗設定** - 選擇表格和測驗模式
-5. **測驗頁** - 卡片翻轉 + 滑動手勢
-6. **結果頁** - 測驗統計 + 錯題檢討
+### 主要 View
+1. **ContentView** - 應用主入口點
+2. **StudyTableListView** - 學習表列表 (NavigationView)
+3. **CameraView** - 相機介面 (UIViewControllerRepresentable)
+4. **EditingView** - OCR 結果編輯 (Form + TextField)
+5. **TestConfigView** - 測驗設定 (Sheet presentation)
+6. **StudyCardView** - 測驗卡片 (Card flip animation)
+7. **ResultView** - 測驗結果 (Chart + List)
 
-### 手勢設計
-- **卡片翻面**: 點擊卡片
-- **答對**: 右滑 (swipe right) ✅
-- **答錯**: 左滑 (swipe left) ❌
-- **返回**: 向下滑 (swipe down)
+### SwiftUI 手勢實作
+```swift
+// 卡片翻面
+.onTapGesture {
+    withAnimation(.easeInOut) {
+        isFlipped.toggle()
+    }
+}
 
-## 性能優化
+// 滑動手勢
+.gesture(
+    DragGesture()
+        .onEnded { value in
+            if value.translation.x > 100 {
+                markAsCorrect() // 右滑答對
+            } else if value.translation.x < -100 {
+                markAsIncorrect() // 左滑答錯
+            }
+        }
+)
+```
 
-### 1. 圖片處理
-- 壓縮圖片減少儲存空間
-- 非同步處理避免 UI 卡頓
-- 快取處理結果
+## iOS 性能優化
 
-### 2. OCR 優化
-- 批次處理多個識別請求
-- 本地 OCR 作為備用方案
-- 識別結果快取
+### 1. 圖片處理優化
+```swift
+// 使用 ImageIO 框架壓縮
+let options: [CFString: Any] = [
+    kCGImageDestinationLossyCompressionQuality: 0.8,
+    kCGImagePropertyPixelWidth: 1024,
+    kCGImagePropertyPixelHeight: 768
+]
 
-### 3. 資料庫優化
-- 建立適當索引
-- 分頁載入大量資料
-- 定期清理過期資料
+// 非同步處理
+DispatchQueue.global(qos: .userInitiated).async {
+    let processedImage = self.processImage(image)
+    DispatchQueue.main.async {
+        self.displayImage(processedImage)
+    }
+}
+```
+
+### 2. Vision Framework 優化
+```swift
+// 批次處理 OCR 請求
+let request = VNRecognizeTextRequest { request, error in
+    // 處理結果
+}
+request.recognitionLanguages = ["ja", "en"]
+request.usesLanguageCorrection = true
+
+// 設定處理優先級
+request.preferBackgroundProcessing = true
+```
+
+### 3. Core Data 優化
+```swift
+// 批次操作
+context.performAndWait {
+    // 批次插入/更新
+}
+
+// 分頁查詢
+let fetchRequest: NSFetchRequest<StudyItem> = StudyItem.fetchRequest()
+fetchRequest.fetchLimit = 50
+fetchRequest.fetchOffset = currentPage * 50
+```
 
 ## 安全性考量
 

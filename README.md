@@ -22,14 +22,14 @@
 - 滑動手勢操作（右滑答對/左滑答錯）
 - 錯題重複練習
 
-## 🔧 技術棧
+## 🔧 技術棧 (iOS 原生)
 
-- **前端**: React Native
-- **狀態管理**: Redux Toolkit  
-- **資料庫**: SQLite
-- **OCR**: Google Vision API + Tesseract.js
+- **開發語言**: Swift
+- **UI 框架**: SwiftUI
+- **資料庫**: Core Data + SQLite
+- **OCR**: Vision Framework + Google Vision API
 - **翻譯**: Google Translate API
-- **測試**: Jest + Detox
+- **測試**: XCTest + XCUITest
 
 ## 📋 專案狀態
 
@@ -72,49 +72,51 @@ japanese-study-app/
 ## 🚀 快速開始
 
 ### 系統需求
-- Node.js >= 14
-- React Native CLI
-- Android Studio / Xcode
-- 真實裝置（相機功能測試）
+- macOS 13+ (Ventura 或更新版本)
+- Xcode 15+ 
+- iOS 16+ (目標設備)
+- 真實 iPhone 設備（相機功能測試）
 
 ### 安裝與執行
 ```bash
 # 克隆專案
-git clone <repository-url>
+git clone https://github.com/ivymatw/japanese-study-app.git
 cd japanese-study-app
 
-# 安裝依賴
-npm install
+# 在 Xcode 中開啟專案
+open JapaneseStudyApp.xcodeproj
 
-# iOS 額外設定
-cd ios && pod install && cd ..
-
-# 啟動開發伺服器
-npx react-native start
-
-# 執行 App
-npx react-native run-ios     # iOS
-npx react-native run-android # Android
+# 在 Xcode 中建置並執行
+⌘ + R
 ```
 
 ### 環境配置
-建立 `.env` 檔案並設定 API 金鑰：
+在 Xcode 專案中建立 `Config.swift` 檔案並設定 API 金鑰：
+```swift
+enum Config {
+    static let googleVisionAPIKey = "your_api_key_here"
+    static let googleTranslateAPIKey = "your_api_key_here"
+}
 ```
-GOOGLE_VISION_API_KEY=your_api_key_here
-GOOGLE_TRANSLATE_API_KEY=your_api_key_here
-```
+
+### 開發者帳戶設定
+- 需要 Apple Developer 帳戶進行真機測試
+- 設定 Provisioning Profile 和 Code Signing
 
 ## 🧪 測試
 
 ```bash
-# 單元測試
-npm test
+# 在 Xcode 中執行所有測試
+⌘ + U
 
-# 整合測試
-npm run test:e2e
+# 命令行執行單元測試
+xcodebuild test -scheme JapaneseStudyApp -destination 'platform=iOS Simulator,name=iPhone 15'
 
-# 覆蓋率報告
-npm run test:coverage
+# 執行 UI 測試
+xcodebuild test -scheme JapaneseStudyAppUITests -destination 'platform=iOS Simulator,name=iPhone 15'
+
+# 生成測試覆蓋率報告
+xcodebuild test -enableCodeCoverage YES -resultBundlePath ./TestResults
 ```
 
 ## 📖 文檔
